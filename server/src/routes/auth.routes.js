@@ -1,5 +1,6 @@
-import express          from 'express';
-import UserController   from "../controller/user.controller";
+import express                from 'express';
+import UserController         from "../controller/user.controller";
+import { calculateSessionExpiration } from '../utils/cookie-utils';
 
 const router = express.Router()
 
@@ -12,7 +13,7 @@ router.post('/login', async (req, res) => {
       req.session.userContext = {
         userName: req.body.userName
       };
-      res.cookie('expirationTime', req.session.cookie.maxAge);
+      res.cookie('expirationTime', calculateSessionExpiration(req.session.cookie.maxAge));
       res.cookie('userName', req.body.userName);
       await req.session.save();
     }
