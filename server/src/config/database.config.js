@@ -12,6 +12,7 @@ async function connect() {
         useNewUrlParser: true
       }
     );
+    return mongoose;
   } catch(error) {
     throw new Error(error);
   }

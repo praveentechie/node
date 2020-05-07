@@ -1,41 +1,28 @@
-import express          from 'express';
-import UserController   from "../controller/user.controller";
-
+import express              from 'express';
+import UserController       from "../controller/user.controller";
+import { exceptionHandler } from '../utils/middlewares';
+import { authValidator }    from '../utils/middlewares';
 const router = express.Router()
 
-router.use((req, res, next) => {
-  if (!req.session.userContext) {
-    res.status(401).send({err: 'User not authorized'});
-  } else {
-    next();
-  }
-});
+router.use(authValidator);
 
-router.post('/', async (req, res) => {
-  try {
-    let response = await UserController.createUser(req.body);
-    res.send({res: response});
-  } catch(err) {
-    res.send({err})
-  }
-});
+const createUser = async (req, res) => {
+  let response = await UserController.createUser(req.body);
+  res.send({res: response});
+};
+router.post('/', exceptionHandler(createUser));
 
-router.get('/:userId', async(req, res) => {
-  try {
-    let response = await UserController.getUserById(req.params.userId)
-    res.send(response);
-  } catch(err) {
-    res.send({err});
-  }
-});
+const getUserById = async(req, res) => {
+  let response = await UserController.getUserById(req.params.userId)
+  res.send(response);
+}
+router.get('/:userId', exceptionHandler(getUserById));
 
-router.get('/', async(req, res) => {
-  try {
-    let response = await UserController.getAllUsers();
-    res.send(response);
-  } catch(err) {
-    res.send({err});
-  }
-});
+const getAllUsers = async(req, res) => {
+  let response = await UserController.getAllUsers();
+  console.log('response', response);
+  res.send(response);
+};
+router.get('/', exceptionHandler(getAllUsers));
 
 export default router;
