@@ -1,3 +1,4 @@
+import { get } from 'lodash';
 import { ExpressException } from "./error-handler";
 /**
  * Validate if user is authorized
@@ -6,7 +7,7 @@ import { ExpressException } from "./error-handler";
  * @param {Function} next 
  */
 export const authValidator = (req, res, next) => {
-  if ((req.session || {}).userContext) {
+  if (get(req.session, 'passport.user')) {
     next();
   } else {
     throw new ExpressException(401, 'Not authorized', 'You are not authorized to view this page');

@@ -34,7 +34,8 @@ async function getAllUsers() {
 
 async function validateLogin(payload) {
   let userDetails = await getUserByUserName(payload.userName);
-  return await bcrypt.compare(payload.password, userDetails.password);
+  let response = await bcrypt.compare(payload.password, userDetails.password);
+  return response ? userDetails : false;
 }
 
 async function applySaltAndHash(password) {

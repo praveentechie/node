@@ -4,6 +4,7 @@ import helmet           from 'helmet';
 import cookieParser     from 'cookie-parser';
 import session          from 'express-session';
 import MongoStore       from 'connect-mongo';
+import passport         from 'passport';
 import { v4 as uuidv4 } from 'uuid';
 
 import connect          from "./config/database.config";
@@ -78,6 +79,8 @@ let mongoStore = MongoStore(session);
     next();
   });
 
+  app.use(passport.initialize());
+  app.use(passport.session());
   app.use((req, res, next) => {
     // intercept the request
     console.log(req.method + ' request received for ' + req.originalUrl + ' @',new Date());
