@@ -6,15 +6,17 @@ import { ExpressException } from '../utils/error-handler';
 const saltRounds = 10
 
 async function createUser (user) {
-  user.password = await applySaltAndHash(user.password);
+  if (user.password) {
+    user.password = await applySaltAndHash(user.password);
+  }
   let userDetails = new UserSchema(user);
   console.log(userDetails);
   return await UserCollection.create(userDetails);
 };
 
-async function getUserByUserName(userName) {
+async function getUserByUserName(userName, allow404 = true) {
   let userDetails = await UserCollection.getByUserName(userName);
-  if (!userDetails) {
+  if (!userDetails && !allow404) {
     throw new ExpressException(400, 'Bad request', 'User doesn\'t exist');
   }
   return userDetails;

@@ -10,7 +10,7 @@ export const authValidator = (req, res, next) => {
   if (get(req.session, 'passport.user')) {
     next();
   } else {
-    throw new ExpressException(401, 'Not authorized', 'You are not authorized to view this page');
+    throw new ExpressException(401, 'Unauthorized', 'You are not authorized to view this page');
   }
 
 };
