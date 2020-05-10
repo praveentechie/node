@@ -4,6 +4,7 @@ import helmet           from 'helmet';
 import cookieParser     from 'cookie-parser';
 import session          from 'express-session';
 import MongoStore       from 'connect-mongo';
+import passport         from 'passport';
 import { v4 as uuidv4 } from 'uuid';
 
 import connect          from "./config/database.config";
@@ -63,21 +64,23 @@ let mongoStore = MongoStore(session);
   // use to make req.body available from express 4.x onwards
   app.use(express.json({limit: '50mb'}));
 
-  app.use(function (req, res, next) {
+  // app.use(function (req, res, next) {
 
-    // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3030');
-    // Request methods you wish to allow
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-    // Request headers you wish to allow
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-    // Set to true if you need the website to include cookies in the requests sent
-    // to the API (e.g. in case you use sessions)
-    res.setHeader('Access-Control-Allow-Credentials', true);
-    // Pass to next layer of middleware
-    next();
-  });
+  //   // Website you wish to allow to connect
+  //   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3030');
+  //   // Request methods you wish to allow
+  //   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+  //   // Request headers you wish to allow
+  //   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+  //   // Set to true if you need the website to include cookies in the requests sent
+  //   // to the API (e.g. in case you use sessions)
+  //   res.setHeader('Access-Control-Allow-Credentials', true);
+  //   // Pass to next layer of middleware
+  //   next();
+  // });
 
+  app.use(passport.initialize());
+  app.use(passport.session());
   app.use((req, res, next) => {
     // intercept the request
     console.log(req.method + ' request received for ' + req.originalUrl + ' @',new Date());
