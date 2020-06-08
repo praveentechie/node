@@ -51,8 +51,16 @@ let mongoStore = MongoStore(session);
   }));
 
   // cross site access
+  const whiteList = ['http://localhost:3030', 'http://localhost:3000'];
   app.use(cors({
-    origin: 'http://localhost:3030',
+    origin: (origin, callback) => {
+      console.log(whiteList.indexOf(origin) !== -1, ' origin ', origin);
+      if (whiteList.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new ExpressException(401, 'Unauthorized', 'CORS not allowed'), false);
+      }
+    },
     credentials: true
   }));
   // protect from vulnerabilities
@@ -108,7 +116,7 @@ let mongoStore = MongoStore(session);
   app.use('/v1/users', userRoutes);
   app.use('/v1/auth', authRoutes);
   app.use('*', (req, res, next) => {
-    next(new ExpressException(404, 'Not found', 'Requested path doesn\'t exist'))
+    next(new ExpressException(404, 'Not found', 'Requested path doesn\'t exist'));
   });
   /**
    * ### express: error handling
