@@ -1,6 +1,7 @@
 # Node POC
 
 ## Folder and file naming conventions
+```
   |--- config
     |--- database.config.js
     |--- server.config.js
@@ -16,7 +17,7 @@
     |--- user.service.js
   |--- utils
     |--- cookie-utils.js
-
+```
 ### Running application
   *npm run dev-server*
 
