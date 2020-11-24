@@ -1,7 +1,7 @@
 import express              from 'express';
 import UserController       from "../controller/user.controller";
-import { exceptionHandler } from '../utils/middlewares';
-import { authValidator }    from '../utils/middlewares';
+import { exceptionHandler } from '../middleware/common.middleware';
+import { authValidator }    from '../middleware/auth.middleware';
 const router = express.Router()
 
 router.use(authValidator);

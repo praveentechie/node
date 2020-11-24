@@ -2,12 +2,13 @@
   "name": "server",
   "version": "1.0.0",
   "description": "server setup",
-  "main": "basic-server.js",
   "scripts": {
     "start": "npm run prod",
     "dev": "npx babel-node ./src/basic-server.js",
     "dev-server": "nodemon --exec babel-node ./src/basic-server.js",
+    "jwt-server": "nodemon --require dotenv/config --exec babel-node ./src/jwt-server.js",
     "server:prod": "node ./dist/basic-server.js",
+    "server:prod:jwt": "node ./dist/jwt-server.js",
     "clean": "rimraf dist",
     "build": "babel ./src --out-dir dist",
     "prod": "NODE_ENV=production npm-run-all clean build server:prod",
@@ -26,6 +27,7 @@
     "express-session": "^1.17.1",
     "got": "^11.1.2",
     "helmet": "^3.22.0",
+    "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.15",
     "mongoose": "^5.9.11",
     "morgan": "^1.10.0",
@@ -36,7 +38,7 @@
     "passport-local": "^1.0.0",
     "passport-twitter": "^1.0.4",
     "rimraf": "^3.0.2",
-    "uuid": "^8.0.0"
+    "uuid": "^8.3.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",

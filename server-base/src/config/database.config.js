@@ -1,12 +1,13 @@
 import mongoose from 'mongoose';
 
-const DB_NAME = 'apDB',
-  HOST = 'localhost';
 // Connect to the db
 async function connect() {
+  const DB_NAME = process.env.mongo_db_name,
+    HOST = process.env.mongo_host,
+    PORT = process.env.mongo_port;
   try {
     await mongoose.connect(
-      `mongodb://${HOST}:27017/${DB_NAME}`,
+      `mongodb://${HOST}:${PORT}/${DB_NAME}`,
       {
         useUnifiedTopology: true,
         useNewUrlParser: true

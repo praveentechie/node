@@ -1,9 +1,7 @@
 import bcrypt             from 'bcrypt';
-import UserSchema         from "./user.schema";
-import UserCollection     from "../collections/user.collection";
+import UserSchema         from "../model/user.model";
+import UserRepository     from "../repository/user.repo";
 import { ExpressException } from '../utils/error-handler';
-
-const saltRounds = 10
 
 async function createUser (user) {
   if (user.password) {
@@ -11,11 +9,11 @@ async function createUser (user) {
   }
   let userDetails = new UserSchema(user);
   console.log(userDetails);
-  return await UserCollection.create(userDetails);
+  return await UserRepository.create(userDetails);
 };
 
 async function getUserByUserName(userName, allow404 = true) {
-  let userDetails = await UserCollection.getByUserName(userName);
+  let userDetails = await UserRepository.getByUserName(userName);
   if (!userDetails && !allow404) {
     throw new ExpressException(400, 'Bad request', 'User doesn\'t exist');
   }
@@ -23,7 +21,7 @@ async function getUserByUserName(userName, allow404 = true) {
 }; 
 
 async function getUserById(id) {
-  let userDetails = await UserCollection.getById(id);
+  let userDetails = await UserRepository.getById(id);
   if (!userDetails) {
     throw new ExpressException(400, 'Bad request', 'User doesn\'t exist');
   }
@@ -31,7 +29,7 @@ async function getUserById(id) {
 }; 
 
 async function getAllUsers() {
-  return await UserCollection.getAll();
+  return await UserRepository.getAll();
 }; 
 
 async function validateLogin(payload) {
@@ -41,14 +39,14 @@ async function validateLogin(payload) {
 }
 
 async function applySaltAndHash(password) {
-  let salt = await bcrypt.genSalt(saltRounds);
+  let salt = await bcrypt.genSalt(process.env.SALT_ROUNDS);
   console.log('salt ', salt);
   let hashed = await bcrypt.hash(password, salt);
   console.log('hasj ', hashed);
   return hashed;
 }
 
-module.exports = {
+export default {
   createUser,
   getUserById,
   getAllUsers,

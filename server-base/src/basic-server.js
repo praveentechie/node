@@ -5,7 +5,9 @@ import cookieParser     from 'cookie-parser';
 import session          from 'express-session';
 import MongoStore       from 'connect-mongo';
 import passport         from 'passport';
+import https            from 'https';
 import { v4 as uuidv4 } from 'uuid';
+import fs                from 'fs';
 
 import connect          from "./config/database.config";
 import userRoutes       from './routes/user.routes';
@@ -21,6 +23,9 @@ let mongoStore = MongoStore(session);
 (async function init() {
   let mongoose = await connect();
 
+  const key = fs.readFileSync('./key.pem');
+  const cert = fs.readFileSync('./cert.pem');
+  const server = https.createServer({key, cert}, app);
   app.use(session({
     name: 'auth',
     // This is the secret used to sign the session ID cookie
@@ -55,7 +60,11 @@ let mongoStore = MongoStore(session);
   app.use(cors({
     origin: (origin, callback) => {
       console.log(whiteList.indexOf(origin) !== -1, ' origin ', origin);
-      if (whiteList.indexOf(origin) !== -1) {
+      let isWhiteListed = whiteList.indexOf(origin) !== -1;
+      if (process.env.NODE_ENV === 'development' && !origin) {
+        isWhiteListed = true;
+      }
+      if (isWhiteListed) {
         callback(null, true);
       } else {
         callback(new ExpressException(401, 'Unauthorized', 'CORS not allowed'), false);
@@ -112,6 +121,9 @@ let mongoStore = MongoStore(session);
     next();
   });
 
+  app.get('/health-check', (req, res) => {
+    res.send('Service is up and running!!!');
+  });
   // use `userRoutes` for all requests starting with `/user`
   app.use('/v1/users', userRoutes);
   app.use('/v1/auth', authRoutes);
@@ -126,7 +138,7 @@ let mongoStore = MongoStore(session);
     handleError(error, res);
   });
 
-  app.listen(NODE_PORT, (err) => {
+  server.listen(NODE_PORT, (err) => {
     if (err) {
       console.error('failed to start server ', err);
     }
@@ -137,4 +149,4 @@ let mongoStore = MongoStore(session);
     // when some unexpected error happens
     console.log('init connection again***************', err);
   });
-})();
+});

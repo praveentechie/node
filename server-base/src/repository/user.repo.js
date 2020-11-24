@@ -1,4 +1,4 @@
-import UserSchema         from "../controller/user.schema";
+import UserSchema         from "../model/user.model";
 
 /**
  * Insert one and return id

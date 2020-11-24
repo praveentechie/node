@@ -8,10 +8,10 @@ import { Strategy as FBStrategy }       from 'passport-facebook';
 import { Strategy as GoogleStrategy }   from 'passport-google-oauth2';
 import { Strategy as TwitterStrategy }  from 'passport-twitter';
 
-import UserController       from "../controller/user.controller";
-import { ExpressException } from '../utils/error-handler';
-import { exceptionHandler } from '../utils/middlewares';
-import { calculateSessionExpiration } from '../utils/cookie-utils';
+import UserController                   from "../controller/user.controller";
+import { ExpressException }             from '../utils/error-handler';
+import { exceptionHandler }             from '../middleware/common.middleware';
+import { calculateSessionExpiration }   from '../utils/cookie-utils';
 
 import {
   FACEBOOK_SCOPE , GOOGLE_SCOPE,
