@@ -3,7 +3,8 @@ import { exceptionHandler }     from './middleware/common.middleware';
 import { customAuthValidator }  from './middleware/auth.middleware';
 import AuthController           from './controller/auth.controller';
 
-initServer().then(({server, app}) => {
+(async function runServer() {
+  let {server, app} = await initServer();
   const NODE_PORT = process.env.PORT;
 
   const jwtLogin = async(req, res) => {
@@ -28,4 +29,4 @@ initServer().then(({server, app}) => {
     }
     console.log(`JWT Server running in ${NODE_PORT}`);
   });
-});
+})

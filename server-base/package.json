@@ -6,12 +6,12 @@
     "start": "npm run prod",
     "dev": "npx babel-node ./src/basic-server.js",
     "dev-server": "nodemon --exec babel-node ./src/basic-server.js",
-    "jwt-server": "nodemon --require dotenv/config --exec babel-node ./src/jwt-server.js",
-    "server:prod": "node ./dist/basic-server.js",
-    "server:prod:jwt": "node ./dist/jwt-server.js",
+    "build": "npm-run-all clean transpile",
     "clean": "rimraf dist",
-    "build": "babel ./src --out-dir dist",
-    "prod": "NODE_ENV=production npm-run-all clean build server:prod",
+    "transpile": "babel ./src --out-dir dist",
+    "prod": "NODE_ENV=production node ./dist/basic-server.js",
+    "jwt-server": "nodemon --require dotenv/config --exec babel-node ./src/jwt-server.js",
+    "server:prod:jwt": "node ./dist/jwt-server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "AP",
@@ -44,10 +44,12 @@
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.9.6",
     "@babel/node": "^7.8.7",
+    "@babel/plugin-transform-runtime": "^7.13.15",
     "@babel/preset-env": "^7.9.6",
     "nodemon": "^2.0.3"
   },
   "engines": {
-    "node": ">= 12.14.1"
+    "node": "12.x",
+    "npm": "6.x"
   }
 }

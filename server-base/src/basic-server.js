@@ -7,24 +7,24 @@ import MongoStore       from 'connect-mongo';
 import passport         from 'passport';
 import https            from 'https';
 import { v4 as uuidv4 } from 'uuid';
-import fs                from 'fs';
+import fs               from 'fs';
 
 import connect          from "./config/database.config";
-import userRoutes       from './routes/user.routes';
-import authRoutes       from "./routes/auth.routes";
+import userRoutes       from './route/user.routes';
+import authRoutes       from "./route/auth.routes";
 import { handleError, ExpressException }  from './utils/error-handler';
 import { calculateSessionExpiration } from "./utils/cookie-utils";
 
 const app = express();
-const NODE_PORT = 4040;
-const SESSION_SECRET = 'a_secret_session_key7four';
+const NODE_PORT = process.env.PORT || 8080;
+const SESSION_SECRET = process.env.SESSION_SECRET;
 let mongoStore = MongoStore(session);
 
 (async function init() {
   let mongoose = await connect();
 
-  const key = fs.readFileSync('./key.pem');
-  const cert = fs.readFileSync('./cert.pem');
+  const key = fs.readFileSync(`${process.env.CERT_PATH}/key.pem`);
+  const cert = fs.readFileSync(`${process.env.CERT_PATH}/cert.pem`);
   const server = https.createServer({key, cert}, app);
   app.use(session({
     name: 'auth',
@@ -56,7 +56,8 @@ let mongoStore = MongoStore(session);
   }));
 
   // cross site access
-  const whiteList = ['http://localhost:3030', 'http://localhost:3000'];
+  const whiteList = process.env.WHITELIST_IPS.split(',');
+
   app.use(cors({
     origin: (origin, callback) => {
       console.log(whiteList.indexOf(origin) !== -1, ' origin ', origin);
@@ -149,4 +150,4 @@ let mongoStore = MongoStore(session);
     // when some unexpected error happens
     console.log('init connection again***************', err);
   });
-});
+})();
