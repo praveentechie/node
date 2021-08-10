@@ -20,4 +20,4 @@ COPY . .
 EXPOSE 8484
 
 # Run command to start app
-CMD [ "npm", "start" ]
+CMD [ "pm2-runtime", "npm", "--", "start" ]
