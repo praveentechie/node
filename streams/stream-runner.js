@@ -24,9 +24,10 @@ function readStream() {
 /**
  * Writing to file `createWriteStream`
  */
-function writeStream() {
+async function writeStream() {
+  await fs.mkdirSync('./out');
   // Write 'hello, ' and then end with 'world!'.
-  const file = fs.createWriteStream('./example.txt');
+  const file = fs.createWriteStream('./out/example.txt');
   file.write('hello, ');
   file.end('world!');
   // Writing more now is not allowed!

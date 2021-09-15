@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video stream</title>
+  <style>
+    .none {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="videoList"></div>
+  <div id="videoPlayer"></div>
+  <script>
+    function loadVideo(url) {
+      console.log('load video', url);
+
+      let videoSource = document.createElement('source');
+      videoSource.setAttribute('src', `/v1/video-stream/stream/${url}`);
+      videoSource.setAttribute('type', 'video/mp4');
+
+      let videoPlayer = document.createElement('video');
+      videoPlayer.setAttribute('controls', true);
+      videoPlayer.setAttribute('style', 'height: 300px; width: 300px');
+      videoPlayer.appendChild(videoSource);
+
+      let videoPlayerContainer = document.getElementById('videoPlayer');
+      videoPlayerContainer.appendChild(videoPlayer);
+    }
+
+    fetch('http://localhost:4747/v1/video-stream/list').then(res => res.json())
+      .then(res => {
+        res.files.forEach(file => {
+          let span = document.createElement('span');
+          span.onclick = () => {
+            loadVideo(file);
+          };
+          span.innerHTML = file;
+          span.setAttribute('style', 'display: "inline-block";height: "70px";width: "70px"; padding: 0 25px');
+          document.getElementById('videoList').appendChild(span);
+        });
+      });
+  </script>
+</body>
+</html>

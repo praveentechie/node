@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to websocket</title>
+    <style>
+      #messageContainer {
+        border: 1px solid #DDDDDD;
+        padding: 5px;
+        width: 50%;
+      }
+      .compose-message-container {
+        margin-top: 15px;
+        text-align: right;
+        width: 50%;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Connected to websocket</h2>
+    <section id="messageContainer">
+    </section>
+    <section class="compose-message-container">
+      <input type="text" id="inputMessage"></input>
+      <button onclick="sendUserMessage(event)">Send</button>
+    </section>
+  </body>
+</html>
