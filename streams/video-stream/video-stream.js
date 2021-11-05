@@ -12,17 +12,33 @@ router.get('/list', (req, res) => {
 });
 
 router.get('/stream/:fileName', (req, res) => {
-  console.log(req.path.fileName);
   const filePath = `/mnt/c/Users/arunachalamp/Videos/${req.params.fileName}`;
-  const stat = fs.statSync(filePath);
-  console.log(stat);
+  // get file stats
+  const stats = fs.statSync(filePath);
+
+  let range = req.headers['range'];
+  if (!range) {
+    // 416 wrong range
+    res.sendStatus(416);
+  }
+
+  // read start and end values from header `range` Eg: format `bytes=0-1000/4000`
+  let [start, end] = range.replace('bytes=', '').split('-');
+  start = parseInt(start, 10);
+  end = end ? parseInt(end, 10) : stats.size - 1;
+  // chunk size for each response
+  let chunksize = end - start + 1;
 
   const head = {
-    'Content-Length': stat.size,
+    'Content-Range': `bytes ${start}-${end}/${stats.size}`,
+    'Accept-Ranges': 'bytes',
+    'Content-Length': chunksize,
     'Content-Type': 'video/mp4',
-  }
-  res.writeHead(200, head)
-  fs.createReadStream(filePath).pipe(res)
+  };
+  // 206 - partial content response type
+  res.writeHead(206, head);
+  // add start and end options to stream.
+  fs.createReadStream(filePath, {start, end}).pipe(res);
 });
 
 module.exports = router;
